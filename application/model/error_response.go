@@ -6,7 +6,7 @@ import (
 
 // ErrorResponse represents the error response structure for HTTP responses
 type ErrorResponse struct {
-	StatusCode     int               `json:"status-code"`
+	ErrorCode      int               `json:"error-code"`
 	HttpStatus     int               `json:"http-status"`
 	ErrorMessage   string            `json:"error-message"`
 	InternalReason string            `json:"internal-reason,omitempty"`
@@ -16,7 +16,7 @@ type ErrorResponse struct {
 // ErrorResponseMapper maps a domain error to an error response DTO
 func ErrorResponseMapper(domainError model.DomainErrorPort) ErrorResponse {
 	return ErrorResponse{
-		StatusCode:     domainError.GetStatusCode(),
+		ErrorCode:      domainError.GetErrorCode(),
 		HttpStatus:     domainError.GetHttpStatus(),
 		ErrorMessage:   domainError.GetErrorMessage(),
 		InternalReason: domainError.GetInternalReason(),
@@ -27,7 +27,7 @@ func ErrorResponseMapper(domainError model.DomainErrorPort) ErrorResponse {
 // ErrorResponseMapperWithInternal maps a domain error to an error response DTO including internal details
 func ErrorResponseMapperWithInternal(domainError model.DomainErrorPort, includeInternal bool) ErrorResponse {
 	response := ErrorResponse{
-		StatusCode:   domainError.GetStatusCode(),
+		ErrorCode:    domainError.GetErrorCode(),
 		HttpStatus:   domainError.GetHttpStatus(),
 		ErrorMessage: domainError.GetErrorMessage(),
 		Details:      domainError.GetDetails(),

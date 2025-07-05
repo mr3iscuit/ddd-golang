@@ -273,7 +273,7 @@ const docTemplate = `{
                 "internal-reason": {
                     "type": "string"
                 },
-                "status-code": {
+                "error-code": {
                     "type": "integer"
                 }
             }

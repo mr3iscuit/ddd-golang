@@ -111,7 +111,7 @@ func TestHandleCreateTodo_UseCaseError(t *testing.T) {
 	handler := NewTodoHTTPAdapter(mockUseCase)
 
 	cmd := command.CreateTodoCommand{Title: "Test"}
-	domainError := model.NewDomainError(400, 400, "Validation failed", "Title too short", nil)
+	domainError := model.NewDomainError(1001, 400, "Validation failed", "Title too short", nil)
 
 	mockUseCase.On("CreateTodoUseCase", cmd).Return(model.TodoID(""), domainError)
 
@@ -162,7 +162,7 @@ func TestHandleListTodos_UseCaseError(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
 	handler := NewTodoHTTPAdapter(mockUseCase)
 
-	domainError := model.NewDomainError(500, 500, "Database error", "Connection failed", nil)
+	domainError := model.NewDomainError(4001, 500, "Database error", "Connection failed", nil)
 	mockUseCase.On("ListTodosUseCase").Return((*appmodel.TodoListResponse)(nil), domainError)
 
 	req := httptest.NewRequest("GET", "/todos", nil)
@@ -303,7 +303,7 @@ func TestHandleTestError(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
 	handler := NewTodoHTTPAdapter(mockUseCase)
 
-	domainError := model.NewDomainError(400, 400, "Test error", "Test reason", nil)
+	domainError := model.NewDomainError(9001, 400, "Test error", "Test reason", nil)
 	mockUseCase.On("TestErrorUseCase").Return(domainError)
 
 	req := httptest.NewRequest("GET", "/test-error", nil)

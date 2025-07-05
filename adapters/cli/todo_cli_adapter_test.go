@@ -82,7 +82,7 @@ func TestHandleCommand_Add_Error(t *testing.T) {
 		Priority:    "medium",
 	}
 
-	domainError := model.NewDomainError(400, 400, "Validation failed", "Title too short", nil)
+	domainError := model.NewDomainError(1001, 400, "Validation failed", "Title too short", nil)
 	mockUseCase.On("CreateTodoUseCase", expectedCmd).Return(model.TodoID(""), domainError)
 
 	adapter.handleCommand("add Test Todo")

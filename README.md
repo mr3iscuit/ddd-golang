@@ -148,7 +148,7 @@ All JSON fields in API responses use **kebab-case** (e.g., `created-at`, `comple
 
 ```json
 {
-  "status-code": 400,
+  "error-code": 1001,
   "http-status": 400,
   "error-message": "Invalid title",
   "internal-reason": "Title validation failed"

@@ -2,7 +2,7 @@ package model
 
 // DomainError represents a domain-specific error following DDD principles
 type DomainError struct {
-	statusCode     int
+	errorCode      int
 	httpStatus     int
 	errorMessage   string
 	internalReason string
@@ -11,7 +11,7 @@ type DomainError struct {
 
 // DomainErrorPort defines the interface for domain errors
 type DomainErrorPort interface {
-	GetStatusCode() int
+	GetErrorCode() int
 	GetHttpStatus() int
 	GetErrorMessage() string
 	GetInternalReason() string
@@ -19,9 +19,9 @@ type DomainErrorPort interface {
 	Error() string
 }
 
-// GetStatusCode returns the status code
-func (e *DomainError) GetStatusCode() int {
-	return e.statusCode
+// GetErrorCode returns the error code
+func (e *DomainError) GetErrorCode() int {
+	return e.errorCode
 }
 
 // GetHttpStatus returns the HTTP status
@@ -49,11 +49,12 @@ func (e *DomainError) Error() string {
 	return e.errorMessage
 }
 
-// Predefined domain errors
+// Predefined domain errors organized by category
+
+// Validation errors (1000-1999)
 var (
-	// Validation errors
 	ErrInvalidTitle = &DomainError{
-		statusCode:     400,
+		errorCode:      1001,
 		httpStatus:     400,
 		errorMessage:   "Invalid title",
 		internalReason: "Title validation failed",
@@ -61,7 +62,7 @@ var (
 	}
 
 	ErrInvalidDescription = &DomainError{
-		statusCode:     400,
+		errorCode:      1002,
 		httpStatus:     400,
 		errorMessage:   "Invalid description",
 		internalReason: "Description validation failed",
@@ -69,7 +70,7 @@ var (
 	}
 
 	ErrInvalidPriority = &DomainError{
-		statusCode:     400,
+		errorCode:      1003,
 		httpStatus:     400,
 		errorMessage:   "Invalid priority",
 		internalReason: "Priority must be low, medium, or high",
@@ -77,7 +78,7 @@ var (
 	}
 
 	ErrEmptyTitle = &DomainError{
-		statusCode:     400,
+		errorCode:      1004,
 		httpStatus:     400,
 		errorMessage:   "Title cannot be empty",
 		internalReason: "Empty title provided",
@@ -85,25 +86,29 @@ var (
 	}
 
 	ErrTitleTooLong = &DomainError{
-		statusCode:     400,
+		errorCode:      1005,
 		httpStatus:     400,
 		errorMessage:   "Title too long",
 		internalReason: "Title exceeds maximum length of 100 characters",
 		details:        map[string]string{"max_length": "100"},
 	}
+)
 
-	// Not found errors
+// Not found errors (2000-2999)
+var (
 	ErrTodoNotFound = &DomainError{
-		statusCode:     404,
+		errorCode:      2001,
 		httpStatus:     404,
 		errorMessage:   "Todo not found",
 		internalReason: "Todo with specified ID not found",
 		details:        nil,
 	}
+)
 
-	// Operation errors
+// Operation errors (3000-3999)
+var (
 	ErrCannotCompleteTodo = &DomainError{
-		statusCode:     400,
+		errorCode:      3001,
 		httpStatus:     400,
 		errorMessage:   "Cannot complete todo",
 		internalReason: "Todo cannot be completed",
@@ -111,16 +116,18 @@ var (
 	}
 
 	ErrCannotArchiveTodo = &DomainError{
-		statusCode:     400,
+		errorCode:      3002,
 		httpStatus:     400,
 		errorMessage:   "Cannot archive todo",
 		internalReason: "Todo cannot be archived",
 		details:        nil,
 	}
+)
 
-	// Repository errors
+// Repository errors (4000-4999)
+var (
 	ErrRepositoryNotInitialized = &DomainError{
-		statusCode:     500,
+		errorCode:      4001,
 		httpStatus:     500,
 		errorMessage:   "Repository not initialized",
 		internalReason: "Repository is nil",
@@ -128,7 +135,7 @@ var (
 	}
 
 	ErrFailedToSaveTodo = &DomainError{
-		statusCode:     500,
+		errorCode:      4002,
 		httpStatus:     500,
 		errorMessage:   "Failed to save todo",
 		internalReason: "Database save operation failed",
@@ -136,7 +143,7 @@ var (
 	}
 
 	ErrFailedToSaveCompletedTodo = &DomainError{
-		statusCode:     500,
+		errorCode:      4003,
 		httpStatus:     500,
 		errorMessage:   "Failed to save completed todo",
 		internalReason: "Database save operation failed for completed todo",
@@ -144,7 +151,7 @@ var (
 	}
 
 	ErrFailedToSaveArchivedTodo = &DomainError{
-		statusCode:     500,
+		errorCode:      4004,
 		httpStatus:     500,
 		errorMessage:   "Failed to save archived todo",
 		internalReason: "Database save operation failed for archived todo",
@@ -152,25 +159,29 @@ var (
 	}
 
 	ErrFailedToRetrieveTodos = &DomainError{
-		statusCode:     500,
+		errorCode:      4005,
 		httpStatus:     500,
 		errorMessage:   "Failed to retrieve todos",
 		internalReason: "Database retrieve operation failed",
 		details:        map[string]string{"operation": "list_todos"},
 	}
+)
 
-	// HTTP errors
+// HTTP errors (5000-5999)
+var (
 	ErrInvalidJSON = &DomainError{
-		statusCode:     400,
+		errorCode:      5001,
 		httpStatus:     400,
 		errorMessage:   "Invalid JSON",
 		internalReason: "JSON parsing failed",
 		details:        nil,
 	}
+)
 
-	// Test error
+// Test errors (9000-9999)
+var (
 	ErrTestError = &DomainError{
-		statusCode:     400,
+		errorCode:      9001,
 		httpStatus:     400,
 		errorMessage:   "Test error message",
 		internalReason: "This is a test error for testing error handling",
@@ -180,14 +191,14 @@ var (
 
 // NewDomainError creates a new domain error (kept for backward compatibility)
 func NewDomainError(
-	statusCode int,
+	errorCode int,
 	httpStatus int,
 	errorMessage string,
 	internalReason string,
 	details map[string]string,
 ) *DomainError {
 	return &DomainError{
-		statusCode:     statusCode,
+		errorCode:      errorCode,
 		httpStatus:     httpStatus,
 		errorMessage:   errorMessage,
 		internalReason: internalReason,
