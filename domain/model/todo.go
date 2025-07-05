@@ -55,9 +55,45 @@ func NewTodo(title string, description string, priority TodoPriority) *Todo {
 	}
 }
 
+func NewTodoWithAllFields(
+	id TodoID,
+	title string,
+	description string,
+	status TodoStatus,
+	priority TodoPriority,
+	createdAt time.Time,
+	updatedAt time.Time,
+	completedAt *time.Time,
+) *Todo {
+	return &Todo{
+		id:          id,
+		title:       title,
+		description: description,
+		status:      TodoStatusPending,
+		priority:    priority,
+		createdAt:   createdAt,
+		updatedAt:   updatedAt,
+		completedAt: completedAt,
+	}
+}
+
 // NewSimpleTodo creates a new Todo with minimal required fields
 func NewSimpleTodo(title string) *Todo {
 	return NewTodo(title, "", TodoPriorityMedium)
+}
+
+// NewTodoFromData reconstructs a Todo object from persistent data
+func NewTodoFromData(id TodoID, title, description string, status TodoStatus, priority TodoPriority, createdAt, updatedAt time.Time, completedAt *time.Time) *Todo {
+	return &Todo{
+		id:          id,
+		title:       title,
+		description: description,
+		status:      status,
+		priority:    priority,
+		createdAt:   createdAt,
+		updatedAt:   updatedAt,
+		completedAt: completedAt,
+	}
 }
 
 // Getters following DDD encapsulation principles with descriptive names

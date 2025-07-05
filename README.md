@@ -4,6 +4,36 @@ This project is a sample implementation of a Todo application using **Domain-Dri
 
 ## Build & Run
 
+### Docker Setup (Recommended)
+
+**Build and start the application with PostgreSQL:**
+```sh
+make docker-build
+make docker-up
+```
+
+**View logs:**
+```sh
+make docker-logs
+```
+
+**Stop the application:**
+```sh
+make docker-down
+```
+
+**Restart the application:**
+```sh
+make docker-restart
+```
+
+**Clean up Docker resources:**
+```sh
+make docker-clean
+```
+
+The application will be available at `http://localhost:8080` and PostgreSQL at `localhost:5432`.
+
 ### Available Makefile Operations
 
 **Build the project binary:**

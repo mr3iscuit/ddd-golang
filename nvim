@@ -1,0 +1,54 @@
+./application/query/list_todos_query.go
+./application/port/todo_repository_port.go
+./application/port/todo_usecase_port.go
+./application/port/todo_domain_service_port.go
+./application/model/error_response.go
+./application/model/todo_response.go
+./application/usecase/todo_usecase.go
+./application/usecase/todo_usecase_test.go
+./application/command/add_todo_command.go
+./infrastructure/repository/todo_repository_memory.go
+./infrastructure/repository/todo_repository_memory_test.go
+./docs/docs.go
+./adapters/cli/todo_cli_adapter.go
+./adapters/cli/todo_cli_adapter_test.go
+./adapters/http/todo_http_adapter.go
+./adapters/http/todo_http_adapter_test.go
+./domain/event/todo_completed.go
+./domain/model/error.go
+./domain/model/todo_test.go
+./domain/model/error_response.go
+./domain/model/category.go
+./domain/model/user.go
+./domain/model/todo.go
+./domain/service/todo_domain_service.go
+./integration_test.go
+./main.go
+    8 ./application/query/list_todos_query.go
+   12 ./application/port/todo_repository_port.go
+   18 ./application/port/todo_usecase_port.go
+   12 ./application/port/todo_domain_service_port.go
+   39 ./application/model/error_response.go
+   55 ./application/model/todo_response.go
+  146 ./application/usecase/todo_usecase.go
+  258 ./application/usecase/todo_usecase_test.go
+   71 ./application/command/add_todo_command.go
+   66 ./infrastructure/repository/todo_repository_memory.go
+  150 ./infrastructure/repository/todo_repository_memory_test.go
+  305 ./docs/docs.go
+  186 ./adapters/cli/todo_cli_adapter.go
+  206 ./adapters/cli/todo_cli_adapter_test.go
+  243 ./adapters/http/todo_http_adapter.go
+  321 ./adapters/http/todo_http_adapter_test.go
+   21 ./domain/event/todo_completed.go
+  207 ./domain/model/error.go
+   76 ./domain/model/todo_test.go
+   37 ./domain/model/error_response.go
+  169 ./domain/model/category.go
+  203 ./domain/model/user.go
+  198 ./domain/model/todo.go
+   83 ./domain/service/todo_domain_service.go
+  140 ./integration_test.go
+   50 ./main.go
+ 3280 total
+Total: 6560

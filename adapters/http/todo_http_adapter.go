@@ -2,25 +2,28 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 
 	"github.com/mr3iscuit/ddd-golang/application/command"
-	appmodel "github.com/mr3iscuit/ddd-golang/application/model"
 	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/domain/model"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
+
+	"github.com/mr3iscuit/ddd-golang/pkg/config"
 )
 
 // TodoHTTPAdapter implements HTTP endpoints using the TodoUseCasePort
 type TodoHTTPAdapter struct {
 	usecase port.TodoUseCasePort
+	config  *config.Config
 }
 
 // NewTodoHTTPAdapter creates a new Todo HTTP handler
-func NewTodoHTTPAdapter(usecase port.TodoUseCasePort) *TodoHTTPAdapter {
-	return &TodoHTTPAdapter{usecase: usecase}
+func NewTodoHTTPAdapter(usecase port.TodoUseCasePort, cfg *config.Config) *TodoHTTPAdapter {
+	return &TodoHTTPAdapter{usecase: usecase, config: cfg}
 }
 
 // writeJSONResponse writes a JSON response with the given status code
@@ -32,7 +35,7 @@ func (h *TodoHTTPAdapter) writeJSONResponse(w http.ResponseWriter, statusCode in
 
 // writeDomainError writes a domain error as JSON response
 func (h *TodoHTTPAdapter) writeDomainError(w http.ResponseWriter, err model.DomainErrorPort) {
-	errorResponse := appmodel.ErrorResponseMapper(err)
+	errorResponse := err.ToResponse()
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("X-Error-Type", "domain-error")
 	w.WriteHeader(err.GetHttpStatus())
@@ -49,7 +52,7 @@ func (h *TodoHTTPAdapter) Router() http.Handler {
 
 	// Swagger documentation
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+		httpSwagger.URL(fmt.Sprintf("http://localhost:%s/swagger/doc.json", h.config.ServerPort)),
 	))
 
 	// Todo endpoints

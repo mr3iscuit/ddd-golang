@@ -10,7 +10,6 @@
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:8080
 // @BasePath  /
 // @schemes http
 
@@ -18,29 +17,52 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+
+	gormpostgres "gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	handler "github.com/mr3iscuit/ddd-golang/adapters/http"
 	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/application/usecase"
 	_ "github.com/mr3iscuit/ddd-golang/docs"
 	"github.com/mr3iscuit/ddd-golang/domain/service"
-	"github.com/mr3iscuit/ddd-golang/infrastructure/repository"
+	postgresrepo "github.com/mr3iscuit/ddd-golang/infrastructure/repository/postgres"
+
+	"github.com/mr3iscuit/ddd-golang/pkg/config"
 )
 
 func main() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Error loading configuration: %v", err)
+	}
+
 	// Outbound port (repository)
-	var todoRepo port.TodoRepositoryPort = repository.NewInMemoryTodoRepository()
+	var todoRepo port.TodoRepositoryPort
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort)
+
+	db, err := gorm.Open(gormpostgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Failed to connect to DB: %v", err)
+	}
+
+	log.Println("Using PostgresTodoRepository")
+	todoRepo = postgresrepo.NewPostgresTodoRepository(db)
+
 	// Domain service (outbound port implementation)
 	var domainService port.TodoDomainServicePort = service.NewTodoDomainService()
 	// Use case (inbound port implementation)
 	var todoUseCase port.TodoUseCasePort = usecase.NewTodoUseCase(todoRepo, domainService)
 	// Handler (inbound adapter)
-	todoHandler := handler.NewTodoHTTPAdapter(todoUseCase)
+	todoHandler := handler.NewTodoHTTPAdapter(todoUseCase, cfg)
 
-	log.Println("Starting HTTP server on :8080")
-	if err := http.ListenAndServe(":8080", todoHandler.Router()); err != nil {
+	log.Printf("Starting HTTP server on :%s", cfg.ServerPort)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", cfg.ServerPort), todoHandler.Router()); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 

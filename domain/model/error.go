@@ -17,6 +17,16 @@ type DomainErrorPort interface {
 	GetInternalReason() string
 	GetDetails() map[string]string
 	Error() string
+	ToResponse() DomainErrorResponse
+}
+
+// DomainErrorResponse represents a standardized error response structure
+type DomainErrorResponse struct {
+	ErrorCode      int               `json:"error_code"`
+	HttpStatus     int               `json:"http_status"`
+	ErrorMessage   string            `json:"error_message"`
+	InternalReason string            `json:"internal_reason,omitempty"`
+	Details        map[string]string `json:"details,omitempty"`
 }
 
 // GetErrorCode returns the error code
@@ -47,6 +57,25 @@ func (e *DomainError) GetDetails() map[string]string {
 // Error implements the error interface
 func (e *DomainError) Error() string {
 	return e.errorMessage
+}
+
+// ToResponse converts a DomainError to a DomainErrorResponse
+func (e *DomainError) ToResponse() DomainErrorResponse {
+	return DomainErrorResponse{
+		ErrorCode:    e.errorCode,
+		HttpStatus:   e.httpStatus,
+		ErrorMessage: e.errorMessage,
+		Details:      e.details,
+	}
+}
+
+// ToResponseWithInternal converts a DomainError to a DomainErrorResponse, optionally including internal reason
+func (e *DomainError) ToResponseWithInternal(includeInternal bool) DomainErrorResponse {
+	response := e.ToResponse()
+	if includeInternal {
+		response.InternalReason = e.internalReason
+	}
+	return response
 }
 
 // Predefined domain errors organized by category
