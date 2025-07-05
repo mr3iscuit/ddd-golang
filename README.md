@@ -2,6 +2,28 @@
 
 This project is a sample implementation of a Todo application using **Domain-Driven Design (DDD)** principles in Go. It demonstrates a clean architecture with clear separation of concerns, encapsulation, and best practices for structuring Go applications.
 
+## Build & Run
+
+To build the project binary:
+
+```sh
+make build
+```
+
+The binary will be created at `build/bin/ddd-golang`.
+
+To run the application:
+
+```sh
+make run
+```
+
+Or run the built binary directly:
+
+```sh
+./build/bin/ddd-golang
+```
+
 ## Project Structure
 
 ```
