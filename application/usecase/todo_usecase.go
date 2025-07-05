@@ -5,21 +5,20 @@ import (
 	appmodel "github.com/mr3iscuit/ddd-golang/application/model"
 	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/domain/model"
-	"github.com/mr3iscuit/ddd-golang/domain/service"
 )
 
 // TodoUseCase implements the TodoUseCasePort
-// and uses the TodoRepositoryPort
+// and uses the TodoRepositoryPort and TodoDomainServicePort
 // (was TodoApplicationService)
 type TodoUseCase struct {
 	todoRepo      port.TodoRepositoryPort
-	domainService *service.TodoDomainService
+	domainService port.TodoDomainServicePort
 }
 
-func NewTodoUseCase(todoRepo port.TodoRepositoryPort) *TodoUseCase {
+func NewTodoUseCase(todoRepo port.TodoRepositoryPort, domainService port.TodoDomainServicePort) *TodoUseCase {
 	return &TodoUseCase{
 		todoRepo:      todoRepo,
-		domainService: service.NewTodoDomainService(),
+		domainService: domainService,
 	}
 }
 

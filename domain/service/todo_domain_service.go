@@ -3,11 +3,16 @@ package service
 import (
 	"strings"
 
+	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/domain/model"
 )
 
 // TodoDomainService handles domain-specific business logic for todos
+// Implements port.TodoDomainServicePort
 type TodoDomainService struct{}
+
+// Ensure TodoDomainService implements TodoDomainServicePort
+var _ port.TodoDomainServicePort = (*TodoDomainService)(nil)
 
 // NewTodoDomainService creates a new todo domain service
 func NewTodoDomainService() *TodoDomainService {

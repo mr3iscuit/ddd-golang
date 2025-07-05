@@ -13,13 +13,15 @@ import (
 
 	handler "github.com/mr3iscuit/ddd-golang/adapters/http"
 	"github.com/mr3iscuit/ddd-golang/application/usecase"
+	"github.com/mr3iscuit/ddd-golang/domain/service"
 	"github.com/mr3iscuit/ddd-golang/infrastructure/repository"
 )
 
 // Helper to start a test server and return its URL and a cleanup function
 func startTestServer() (string, func()) {
 	repo := repository.NewInMemoryTodoRepository()
-	useCase := usecase.NewTodoUseCase(repo)
+	domainService := service.NewTodoDomainService()
+	useCase := usecase.NewTodoUseCase(repo, domainService)
 	h := handler.NewTodoHTTPAdapter(useCase)
 
 	r := chi.NewRouter()

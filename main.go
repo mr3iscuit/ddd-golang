@@ -25,14 +25,17 @@ import (
 	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/application/usecase"
 	_ "github.com/mr3iscuit/ddd-golang/docs"
+	"github.com/mr3iscuit/ddd-golang/domain/service"
 	"github.com/mr3iscuit/ddd-golang/infrastructure/repository"
 )
 
 func main() {
 	// Outbound port (repository)
 	var todoRepo port.TodoRepositoryPort = repository.NewInMemoryTodoRepository()
+	// Domain service (outbound port implementation)
+	var domainService port.TodoDomainServicePort = service.NewTodoDomainService()
 	// Use case (inbound port implementation)
-	var todoUseCase port.TodoUseCasePort = usecase.NewTodoUseCase(todoRepo)
+	var todoUseCase port.TodoUseCasePort = usecase.NewTodoUseCase(todoRepo, domainService)
 	// Handler (inbound adapter)
 	todoHandler := handler.NewTodoHTTPAdapter(todoUseCase)
 
