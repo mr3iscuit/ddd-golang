@@ -14,6 +14,7 @@ import (
 	"github.com/mr3iscuit/ddd-golang/application/command"
 	appmodel "github.com/mr3iscuit/ddd-golang/application/model"
 	"github.com/mr3iscuit/ddd-golang/domain/model"
+	"github.com/mr3iscuit/ddd-golang/pkg/config"
 )
 
 type MockTodoUseCase struct {
@@ -63,7 +64,7 @@ func (m *MockTodoUseCase) TestErrorUseCase() *model.DomainError {
 
 func TestHandleCreateTodo_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	cmd := command.CreateTodoCommand{
 		Title:       "Test Todo",
@@ -91,7 +92,7 @@ func TestHandleCreateTodo_Success(t *testing.T) {
 
 func TestHandleCreateTodo_InvalidJSON(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	req := httptest.NewRequest("POST", "/todos", bytes.NewBufferString("invalid json"))
 	req.Header.Set("Content-Type", "application/json")
@@ -108,7 +109,7 @@ func TestHandleCreateTodo_InvalidJSON(t *testing.T) {
 
 func TestHandleCreateTodo_UseCaseError(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	cmd := command.CreateTodoCommand{Title: "Test"}
 	domainError := model.NewDomainError(1001, 400, "Validation failed", "Title too short", nil)
@@ -133,7 +134,7 @@ func TestHandleCreateTodo_UseCaseError(t *testing.T) {
 
 func TestHandleListTodos_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	todos := []appmodel.TodoResponse{
 		{ID: "1", Title: "Todo 1", Status: "pending", Priority: "high"},
@@ -160,7 +161,7 @@ func TestHandleListTodos_Success(t *testing.T) {
 
 func TestHandleListTodos_UseCaseError(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	domainError := model.NewDomainError(4001, 500, "Database error", "Connection failed", nil)
 	mockUseCase.On("ListTodosUseCase").Return((*appmodel.TodoListResponse)(nil), domainError)
@@ -181,7 +182,7 @@ func TestHandleListTodos_UseCaseError(t *testing.T) {
 
 func TestHandleGetTodo_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	todoID := model.TodoID("test-id")
 	todoResponse := &appmodel.TodoResponse{
@@ -215,7 +216,7 @@ func TestHandleGetTodo_Success(t *testing.T) {
 
 func TestHandleCompleteTodo_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	todoID := model.TodoID("test-id")
 	mockUseCase.On("CompleteTodoUseCase", todoID).Return((*model.DomainError)(nil))
@@ -241,7 +242,7 @@ func TestHandleCompleteTodo_Success(t *testing.T) {
 
 func TestHandleArchiveTodo_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	todoID := model.TodoID("test-id")
 	mockUseCase.On("ArchiveTodoUseCase", todoID).Return((*model.DomainError)(nil))
@@ -267,7 +268,7 @@ func TestHandleArchiveTodo_Success(t *testing.T) {
 
 func TestHandleUpdateTodo_Success(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	cmd := command.UpdateTodoCommand{
 		ID:          "test-id",
@@ -301,7 +302,7 @@ func TestHandleUpdateTodo_Success(t *testing.T) {
 
 func TestHandleTestError(t *testing.T) {
 	mockUseCase := new(MockTodoUseCase)
-	handler := NewTodoHTTPAdapter(mockUseCase)
+	handler := NewTodoHTTPAdapter(mockUseCase, &config.Config{ServerPort: "8080"})
 
 	domainError := model.NewDomainError(9001, 400, "Test error", "Test reason", nil)
 	mockUseCase.On("TestErrorUseCase").Return(domainError)

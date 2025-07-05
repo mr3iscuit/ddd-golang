@@ -50,7 +50,7 @@ func startPostgresTestServer(t *testing.T) (string, func()) {
 	repo := postgresrepo.NewPostgresTodoRepository(db)
 	domainService := service.NewTodoDomainService()
 	useCase := usecase.NewTodoUseCase(repo, domainService)
-	h := handler.NewTodoHTTPAdapter(useCase)
+	h := handler.NewTodoHTTPAdapter(useCase, cfg)
 
 	r := chi.NewRouter()
 	r.Post("/todos", h.HandleCreateTodo)
