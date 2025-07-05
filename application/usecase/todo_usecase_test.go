@@ -98,20 +98,16 @@ func TestUpdateTodoUseCase_NotFound(t *testing.T) {
 func TestUpdateTodoUseCase_InvalidTitle(t *testing.T) {
 	repo := new(MockTodoRepository)
 	uc := NewTodoUseCase(repo)
-	todo := model.NewTodo("Original", "Desc", model.TodoPriorityMedium)
-	// Create a title that's too long (over 200 characters)
-	longTitle := "This is a very long title that exceeds the maximum allowed length of 200 characters. " +
-		"It should trigger a validation error in the domain model. " +
-		"The title validation should prevent titles that are too long from being saved. " +
-		"This is a test to ensure that the domain validation works correctly."
+	// Create a title that's too long (over 100 characters - domain service limit)
+	longTitle := "This is a very long title that exceeds the maximum allowed length of 100 characters. " +
+		"It should trigger a validation error in the domain service."
 	cmd := command.UpdateTodoCommand{ID: "test-id", Title: longTitle}
 
-	repo.On("FindByID", model.TodoID("test-id")).Return(todo, nil)
-	// Note: Save is not called because UpdateTitle returns an error
+	// Note: FindByID is not called because domain validation fails first
 
 	err := uc.UpdateTodoUseCase(cmd)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Invalid title", err.GetErrorMessage())
+	assert.Equal(t, "Title too long", err.GetErrorMessage())
 	repo.AssertExpectations(t)
 }
 

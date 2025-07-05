@@ -5,20 +5,30 @@ import (
 	appmodel "github.com/mr3iscuit/ddd-golang/application/model"
 	"github.com/mr3iscuit/ddd-golang/application/port"
 	"github.com/mr3iscuit/ddd-golang/domain/model"
+	"github.com/mr3iscuit/ddd-golang/domain/service"
 )
 
 // TodoUseCase implements the TodoUseCasePort
 // and uses the TodoRepositoryPort
 // (was TodoApplicationService)
 type TodoUseCase struct {
-	todoRepo port.TodoRepositoryPort
+	todoRepo      port.TodoRepositoryPort
+	domainService *service.TodoDomainService
 }
 
 func NewTodoUseCase(todoRepo port.TodoRepositoryPort) *TodoUseCase {
-	return &TodoUseCase{todoRepo: todoRepo}
+	return &TodoUseCase{
+		todoRepo:      todoRepo,
+		domainService: service.NewTodoDomainService(),
+	}
 }
 
 func (uc *TodoUseCase) CreateTodoUseCase(cmd command.CreateTodoCommand) (model.TodoID, *model.DomainError) {
+	// Validate using domain service
+	if err := uc.domainService.ValidateCreateTodoCommand(cmd.Title, cmd.Description, cmd.Priority); err != nil {
+		return "", err
+	}
+
 	// Map priority string to domain type
 	var priority model.TodoPriority
 	switch cmd.Priority {
@@ -38,6 +48,11 @@ func (uc *TodoUseCase) CreateTodoUseCase(cmd command.CreateTodoCommand) (model.T
 }
 
 func (uc *TodoUseCase) UpdateTodoUseCase(cmd command.UpdateTodoCommand) *model.DomainError {
+	// Validate using domain service
+	if err := uc.domainService.ValidateUpdateTodoCommand(cmd.Title, cmd.Description, cmd.Priority); err != nil {
+		return err
+	}
+
 	todo, err := uc.todoRepo.FindByID(model.TodoID(cmd.ID))
 	if err != nil {
 		return model.ErrTodoNotFound
