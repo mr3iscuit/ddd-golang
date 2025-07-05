@@ -29,4 +29,5 @@ Thumbs.db
 /docs/swagger.json
 
 # Scripts output
-scripts/*.log main
+scripts/*.log
+main
