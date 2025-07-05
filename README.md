@@ -67,7 +67,6 @@ ddd-golang/
     port/             # Port interfaces (inbound/outbound)
     query/            # Query objects for use cases
     usecase/          # Use case implementations
-  common/             # Common/shared code (error helpers, etc.)
   domain/             # Domain layer (entities, value objects, domain services)
     event/            # Domain events
     model/            # Domain models (pure business logic)
@@ -85,7 +84,6 @@ ddd-golang/
 - **Application Layer**: Contains use cases, application models (formerly DTOs), commands, queries, and port interfaces. Coordinates domain logic and infrastructure.
 - **Adapters Layer**: Implements inbound interfaces (HTTP, CLI) and handles request/response mapping.
 - **Infrastructure Layer**: Implements outbound interfaces (repositories, DB, etc.).
-- **Common Layer**: Shared helpers and error utilities.
 
 ## Naming Conventions
 
@@ -103,14 +101,25 @@ All JSON fields in API responses use **kebab-case** (e.g., `created-at`, `comple
 
 - All errors returned from use cases and adapters are domain errors implementing the `DomainErrorPort` interface.
 - HTTP and CLI adapters map domain errors to structured error response models (see `application/model/error_response.go`).
-- Example error response:
+- Errors are organized into logical groups with specific error code ranges:
+
+### Error Code Ranges
+
+- **1000-1999**: Validation errors (title, description, priority validation)
+- **2000-2999**: Not found errors (todo not found)
+- **3000-3999**: Operation errors (cannot complete/archive)
+- **4000-4999**: Repository errors (database operations)
+- **5000-5999**: HTTP errors (JSON parsing)
+- **9000-9999**: Test errors (for testing purposes)
+
+### Example Error Response
 
 ```json
 {
-  "status_code": 400,
-  "http_status": 400,
-  "error_message": "Invalid title",
-  "internal_reason": "Title validation failed",
+  "error-code": 1001,
+  "http-status": 400,
+  "error-message": "Invalid title",
+  "internal-reason": "Title validation failed",
   "details": {"max_length": "100"}
 }
 ```
