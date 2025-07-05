@@ -1,0 +1,188 @@
+basePath: /
+definitions:
+  command.AddTodoCommand:
+    properties:
+      title:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - title
+    type: object
+  dto.TodoView:
+    properties:
+      completed:
+        type: boolean
+      created_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  model.DomainError:
+    properties:
+      details:
+        additionalProperties:
+          type: string
+        type: object
+      errorMessage:
+        type: string
+      httpStatus:
+        type: integer
+      internalReason:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A DDD-style Todo API with proper layering
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Todo API
+  version: "1.0"
+paths:
+  /test-error:
+    get:
+      consumes:
+      - application/json
+      description: Always returns an error for testing purposes
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.DomainError'
+      summary: Test error endpoint
+      tags:
+      - test
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: Get all todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.TodoView'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.DomainError'
+      summary: List all todos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: Create a new todo with the given title
+      parameters:
+      - description: Todo to create
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/command.AddTodoCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.DomainError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.DomainError'
+      summary: Create a new todo
+      tags:
+      - todos
+  /todos/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific todo by its ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TodoView'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.DomainError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.DomainError'
+      summary: Get a todo by ID
+      tags:
+      - todos
+  /todos/{id}/complete:
+    put:
+      consumes:
+      - application/json
+      description: Mark a todo as completed
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.DomainError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.DomainError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.DomainError'
+      summary: Complete a todo
+      tags:
+      - todos
+schemes:
+- http
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
