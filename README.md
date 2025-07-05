@@ -4,22 +4,52 @@ This project is a sample implementation of a Todo application using **Domain-Dri
 
 ## Build & Run
 
-To build the project binary:
+### Available Makefile Operations
 
+**Build the project binary:**
 ```sh
 make build
 ```
-
 The binary will be created at `build/bin/ddd-golang`.
 
-To run the application:
-
+**Run the application (using go run):**
 ```sh
 make run
 ```
 
-Or run the built binary directly:
+**Build and run the binary:**
+```sh
+make run-built
+```
 
+**Run tests:**
+```sh
+make test
+```
+
+**Run linting:**
+```sh
+make lint
+```
+
+**Generate Swagger documentation:**
+```sh
+make swagger
+```
+
+**Clean build artifacts:**
+```sh
+make clean
+```
+
+### Manual Commands
+
+To run the application directly:
+```sh
+go run main.go
+```
+
+Or run the built binary directly:
 ```sh
 ./build/bin/ddd-golang
 ```
