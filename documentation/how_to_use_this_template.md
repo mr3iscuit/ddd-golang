@@ -4,8 +4,9 @@ This is a **template project** for quickly starting new DDD/Hexagonal Architectu
 
 This project follows Domain-Driven Design (DDD) and Clean Architecture principles. Adding a new feature means respecting boundaries, naming, and responsibilities. Here's a step-by-step guide, with the *why* behind every step, what to create, where, and when.
 
-If you are not familiar with Domain Driven Development consider viewing these files 
-- [Domain Service and Domain Model Explanation](#domain-service-and-domain-model-explanation)
+If you are not familiar with Domain Driven Development consider viewing these files
+
+- [Domain Driven Development](./ddd.md)
 
 ## Quick Start 
 
